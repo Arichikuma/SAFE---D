@@ -1,0 +1,69 @@
+#include <NewPing.h>
+#include <dht.h>
+dht DHT;
+#define DHT11_PIN 7
+#define TRIGGER_PIN 12
+#define ECHO_PIN 11
+#define MAX_DISTANCE 300
+const int capteur_D = 4;
+const int capteur_A = A0;
+
+int val_analogique;
+
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+
+void setup() {
+Serial.begin(9600);
+}
+
+void loop() {
+
+  // Ultrasonic Sensor
+delay(150);
+int uS = sonar.ping();
+if (uS==0)
+{
+Serial.println("MAX: resetting sensor");
+pinMode(ECHO_PIN, OUTPUT);
+delay(150);
+digitalWrite(ECHO_PIN, LOW);
+delay(150);
+pinMode(ECHO_PIN, INPUT);
+delay(150);
+}
+else
+{
+Serial.print(" ");
+Serial.print("Change in Water Level: ");
+int x = abs(uS / US_ROUNDTRIP_CM - 117);
+
+Serial.print(x);
+Serial.println("cm");
+}
+{  
+  // DT 11 Temperature Humidity sensor
+  int chk = DHT.read11(DHT11_PIN);
+  int something = DHT.temperature;
+  Serial.print("Temperature = ");
+  Serial.println(something - 6);
+  Serial.print("Humidity = ");
+  Serial.println(DHT.humidity);
+  delay(1000);
+  }
+ {
+    //Rain Sensor
+    if(digitalRead(capteur_D) == LOW) 
+  {
+    Serial.println("Digital value : Rainy"); 
+    delay(10); 
+  }
+else
+  {
+    Serial.println("Digital value : Not Raining");
+    delay(10); 
+  }
+val_analogique=analogRead(capteur_A); 
+
+  delay(1000);
+ }
+}
